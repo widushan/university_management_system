@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>University Management System</title>
+    <style>
+        body { background: #a9c9ff; font-family: Arial, sans-serif; text-align: center; }
+        .btn { background: #ff7e7e; color: #222; border: none; border-radius: 30px; padding: 20px 40px; margin: 20px; font-size: 1.5em; font-weight: bold; cursor: pointer; }
+        .btn:hover { background: #ff5252; }
+        .container { margin-top: 60px; }
+        .logo { width: 200px; margin: 30px auto; }
+        .form-group { margin: 20px 0; }
+        .form-control { padding: 10px; font-size: 1.2em; width: 300px; }
+        .message { color: green; font-weight: bold; }
+        .errorlist { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

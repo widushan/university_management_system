@@ -1,0 +1,10 @@
+{% extends 'main/base.html' %}
+{% block content %}
+    <img src="/static/images/logo.png" class="logo" alt="Logo">
+    <h1>Welcome</h1>
+    <a href="{% url 'login_admin' %}" class="btn">Admin Login</a>
+    <a href="{% url 'login_lecturer' %}" class="btn">Lecturer Login</a>
+    <a href="{% url 'login_student' %}" class="btn">Student Login</a>
+    <br><br>
+    <a href="{% url 'register' %}">Register New Account</a>
+{% endblock %}
