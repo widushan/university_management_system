@@ -25,7 +25,7 @@ def login_view(request, user_type):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            prefix = {'admin': 'admin', 'lecturer': 'lec', 'student': 'st'}[user_type]
+            prefix = {'admin': 'Admin', 'lecturer': 'Lec', 'student': 'St'}[user_type]
             if not username.startswith(prefix):
                 messages.error(request, f"Username must start with '{prefix}'")
             else:
