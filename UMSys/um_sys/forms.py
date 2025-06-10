@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Student
+from .models import Student, Department, Degree, Semester, Course
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -50,3 +50,9 @@ class StudentEditForm(forms.ModelForm):
             'department': forms.Select(attrs={'class': 'form-control'}),
             'degree': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
+class SemesterCourseForm(forms.Form):
+    department = forms.ModelChoiceField(queryset=Department.objects.all())
+    degree = forms.ModelChoiceField(queryset=Degree.objects.all())
+    semester = forms.ModelChoiceField(queryset=Semester.objects.all())

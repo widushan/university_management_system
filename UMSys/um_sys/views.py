@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .forms import RegistrationForm, LoginForm
-from .forms import StudentForm, StudentEditForm
-from .models import Student
+from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm
+from .models import Student, Course
 
 def home_view(request):
     return render(request, 'main/home.html')
@@ -107,3 +106,28 @@ def manage_student(request):
         'reg_no_query': reg_no_query,
         'message': message
     })
+
+
+def add_semester_courses(request):
+    if request.method == 'POST':
+        form = SemesterCourseForm(request.POST)
+        course_ids = request.POST.getlist('course_id')
+        course_names = request.POST.getlist('course_name')
+        if form.is_valid():
+            department = form.cleaned_data['department']
+            degree = form.cleaned_data['degree']
+            semester = form.cleaned_data['semester']
+            # Save each course
+            for cid, cname in zip(course_ids, course_names):
+                if cid.strip() and cname.strip():
+                    Course.objects.create(
+                        department=department,
+                        degree=degree,
+                        semester=semester,
+                        course_id=cid.strip(),
+                        course_name=cname.strip()
+                    )
+            return redirect('add_semester_courses')
+    else:
+        form = SemesterCourseForm()
+    return render(request, 'main/add_semester_courses.html', {'form': form})

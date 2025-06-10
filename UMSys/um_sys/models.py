@@ -11,6 +11,13 @@ class Degree(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class Semester(models.Model):
+    name = models.CharField(max_length=20)
+    def __str__(self):
+        return self.name
+    
 
 class Student(models.Model):
     avatar = models.ImageField(upload_to='avatars/')
@@ -30,3 +37,13 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.registration_no})"
+    
+
+class Course(models.Model):
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    degree = models.ForeignKey(Degree, on_delete=models.CASCADE)
+    semester = models.ForeignKey(Semester, on_delete=models.CASCADE)
+    course_id = models.CharField(max_length=20)
+    course_name = models.CharField(max_length=100)
+    def __str__(self):
+        return f"{self.course_id} - {self.course_name}"
