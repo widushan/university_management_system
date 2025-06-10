@@ -1,0 +1,144 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f8fb;
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-container {
+    margin-top: -60px;
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    
+    width: 280px;
+    background: linear-gradient(135deg, #e5e5e5 80%, #caffb9 100%);
+    min-height: 100vh;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+}
+
+.sidebar img {
+    margin-top: 20px;
+    width: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.sidebar h3 {
+    margin: 10px 0 30px 0;
+    font-size: 1.2em;
+    color: #003366;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 12px 30px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.sidebar ul li.active,
+.sidebar ul li:hover {
+    background: #caffb9;
+    font-weight: bold;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.logout-btn {
+    display: block;
+    margin: 30px 30px 0 30px;
+    background: #222;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.logout-btn:hover {
+    background: #003366;
+}
+
+.main-content {
+    flex: 1;
+    padding: 40px 60px;
+}
+
+.main-content h2 {
+    color: #003366;
+    font-size: 2.2em;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+form {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    padding: 30px 40px;
+    max-width: 900px;
+    margin: auto;
+}
+
+form label {
+    font-weight: 500;
+    color: #003366;
+    margin-bottom: 4px;
+    display: block;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="number"],
+form input[type="file"],
+form select {
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 18px;
+    border: 1px solid #cce0ff;
+    border-radius: 7px;
+    background: #f7fbff;
+    font-size: 1em;
+    transition: border 0.2s;
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form input[type="number"]:focus,
+form select:focus {
+    border: 1.5px solid #003366;
+    outline: none;
+}
+
+form button[type="submit"] {
+    background: #003366;
+    color: #fff;
+    padding: 12px 40px;
+    border-radius: 20px;
+    border: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 10px;
+}
+
+form button[type="submit"]:hover {
+    background: #0055a5;
+}

@@ -1,0 +1,68 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/add_student.css' %}">
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div style="text-align: center;">
+            <img src="/static/images/logo.png" alt="University Logo">
+            <h3><a href="{% url 'home' %}"> &lt;&lt; HOME </a></h3>
+        </div>
+        <ul>
+            <a href="{% url 'add_student' %}"><li class="active">Add Students</li></a>
+            <li>Manage Students</li>
+            <li>Add Semester Courses</li>
+            <li>Add Lecturers</li>
+            <li>Manage Lecturers</li>
+            <li>Add Departments and Courses</li>
+            <li>Manage Departments and Courses</li>
+            <li>Add Exam Results</li>
+            <li>View Exam Results</li>
+        </ul>
+        <a href="{% url 'home' %}" class="logout-btn">Log Out</a>
+    </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <h2>Add Students</h2>
+        <form method="post" enctype="multipart/form-data" id="studentForm">
+            {% csrf_token %}
+            <div style="display: flex; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px; margin-right: 40px;">  
+                    <label>Avatar:</label>
+                    {{ form.avatar }}
+                    <label>Name:</label>
+                    {{ form.name }}
+                    <label>Age:</label>
+                    {{ form.age }}
+                    <label>Contact No:</label>
+                    {{ form.contact_no }}
+                    <label>Personal Email:</label>
+                    {{ form.personal_email }}
+                    <label>NIC No:</label>
+                    {{ form.nic_no }}
+                    <label>Guardian Name:</label>
+                    {{ form.guardian_name }}
+                    <label>Guardian Contact No:</label>
+                    {{ form.guardian_contact_no }}
+                </div>
+                <div style="flex: 1; min-width: 300px;">
+                    <label>Department:</label>
+                    {{ form.department }}
+                    <label>Degree:</label>
+                    {{ form.degree }}
+                    <label>Entry Year:</label>
+                    {{ form.entry_year }}
+                    <label>Batch:</label>
+                    {{ form.batch }}
+                    <label>University Email:</label>
+                    {{ form.university_email }}
+                    <label>Registration No:</label>
+                    <input type="text" value="{{ reg_no }}" readonly style="background: #eee; width: 100%; padding: 5px; border-radius: 5px;">
+                </div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

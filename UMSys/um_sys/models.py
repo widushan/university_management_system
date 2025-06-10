@@ -1,4 +1,32 @@
 from django.db import models
-from datetime import datetime
 
-# Create your models here.
+class Department(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class Degree(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class Student(models.Model):
+    avatar = models.ImageField(upload_to='avatars/')
+    name = models.CharField(max_length=100)
+    age = models.IntegerField()
+    contact_no = models.CharField(max_length=15)
+    personal_email = models.EmailField()
+    nic_no = models.CharField(max_length=20)
+    guardian_name = models.CharField(max_length=100)
+    guardian_contact_no = models.CharField(max_length=15)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    degree = models.ForeignKey(Degree, on_delete=models.CASCADE)
+    entry_year = models.IntegerField()
+    batch = models.CharField(max_length=20)
+    university_email = models.EmailField()
+    registration_no = models.CharField(max_length=20, unique=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.registration_no})"

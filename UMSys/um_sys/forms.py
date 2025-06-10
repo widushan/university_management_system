@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from .models import Student
 
 class RegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -26,3 +27,15 @@ class RegistrationForm(forms.ModelForm):
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
+
+
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        exclude = ['registration_no']
+        widgets = {
+            'avatar': forms.ClearableFileInput(),
+            'department': forms.Select(attrs={'class': 'form-control'}),
+            'degree': forms.Select(attrs={'class': 'form-control'}),
+        }
