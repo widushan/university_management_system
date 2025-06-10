@@ -39,3 +39,14 @@ class StudentForm(forms.ModelForm):
             'department': forms.Select(attrs={'class': 'form-control'}),
             'degree': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
+class StudentEditForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = '__all__'
+        widgets = {
+            'registration_no': forms.TextInput(attrs={'readonly': 'readonly'}),
+            'department': forms.Select(attrs={'class': 'form-control'}),
+            'degree': forms.Select(attrs={'class': 'form-control'}),
+        }

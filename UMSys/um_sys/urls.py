@@ -13,6 +13,8 @@ urlpatterns = [
     path('dashboard/lecturer/', views.dashboard_lecturer, name='dashboard_lecturer'),
     path('dashboard/student/', views.dashboard_student, name='dashboard_student'),
     path('add_student/', views.add_student, name='add_student'),
+    path('manage_student/', views.manage_student, name='manage_student'),
+    
 ]
 
 if settings.DEBUG:

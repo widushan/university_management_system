@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm
-from .forms import StudentForm
+from .forms import StudentForm, StudentEditForm
 from .models import Student
 
 def home_view(request):
@@ -69,3 +69,41 @@ def add_student(request):
         form = StudentForm()
     reg_no = get_next_registration_no()
     return render(request, 'main/add_student.html', {'form': form, 'reg_no': reg_no})
+
+
+def manage_student(request):
+    student = None
+    form = None
+    reg_no_query = request.GET.get('reg_no', '')
+    message = ''
+    if reg_no_query:
+        try:
+            student = Student.objects.get(registration_no=reg_no_query)
+            form = StudentEditForm(instance=student)
+        except Student.DoesNotExist:
+            form = None
+            student = None
+
+    if request.method == 'POST':
+        reg_no = request.POST.get('registration_no')
+        try:
+            student = Student.objects.get(registration_no=reg_no)
+        except Student.DoesNotExist:
+            student = None
+        if student:
+            form = StudentEditForm(request.POST, request.FILES, instance=student)
+            if form.is_valid():
+                form.save()
+                message = "Student updated successfully!"
+            else:
+                message = "Please correct the errors below."
+        else:
+            form = None
+            message = "Student not found."
+
+    return render(request, 'main/manage_student.html', {
+        'form': form,
+        'student': student,
+        'reg_no_query': reg_no_query,
+        'message': message
+    })

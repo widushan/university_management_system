@@ -1,0 +1,45 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/add_student.css' %}">
+<div class="dashboard-container">
+    <div class="sidebar">
+        <div style="text-align: center;">
+            <img src="/static/images/logo.png" alt="University Logo">
+            <h3><a href="{% url 'home' %}"> &lt;&lt; HOME </a></h3>
+        </div>
+        <ul>
+            <a href="{% url 'add_student' %}"><li>Add Students</li></a>
+            <a href="{% url 'manage_student' %}"><li class="active">Manage Students</li></a>
+            <li>Add Semester Courses</li>
+            <li>Add Lecturers</li>
+            <li>Manage Lecturers</li>
+            <li>Add Departments and Courses</li>
+            <li>Manage Departments and Courses</li>
+            <li>Add Exam Results</li>
+            <li>View Exam Results</li>
+        </ul>
+        <a href="{% url 'home' %}" class="logout-btn">Log Out</a>
+    </div>
+    <div class="main-content">
+        <h2>Manage Students</h2>
+        <form method="get" style="margin-bottom: 30px;">
+            <label>Search by Reg No</label>
+            <input type="text" name="reg_no" value="{{ reg_no_query|default:'' }}">
+            <button type="submit">Search</button>
+        </form>
+        {% if form %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Update</button>
+            </form>
+        {% elif reg_no_query %}
+            <p style="color: red;">No student found with Registration No: {{ reg_no_query }}</p>
+        {% endif %}
+        {% if message %}
+            <p style="color: green;">{{ message }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
