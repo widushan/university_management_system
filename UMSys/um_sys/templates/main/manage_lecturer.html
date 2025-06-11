@@ -12,9 +12,9 @@
             <a href="{% url 'add_student' %}"><li>Add Students</li></a>
             <a href="{% url 'manage_student' %}"><li>Manage Students</li></a>
             <a href="{% url 'add_semester_courses' %}"><li>Add Semester Courses</li></a>
-            <a href="{% url 'manage_semester_courses' %}">Manage Semester Courses</a><br>
-            <a href="{% url 'add_lecturer' %}"><li class="active">Add Lecturers</li></a>
-            <a href="{% url 'manage_lecturer' %}">Manage Lecturers</li></a>
+            <a href="{% url 'manage_semester_courses' %}"><li>Manage Semester Courses</li></a>
+            <a href="{% url 'add_lecturer' %}"><li>Add Lecturers</li></a>
+            <a href="{% url 'manage_lecturer' %}"><li class="active">Manage Lecturers</li></a>
             <li>Add Departments and Courses</li>
             <li>Manage Departments and Courses</li>
             <li>Add Exam Results</li>
@@ -23,20 +23,25 @@
         <a href="{% url 'home' %}" class="logout-btn">Log Out</a>
     </div>
     <div class="main-content">
-        <h2>Add Lecturers</h2>
+        <h2>Manage Lecturers</h2>
         {% if message %}
             <div style="color: green; font-weight: bold; margin-bottom: 20px;">{{ message }}</div>
         {% endif %}
+        <form method="get" style="margin-bottom: 30px;">
+            <label>Search by University ID</label>
+            <input type="text" name="university_id" value="{{ university_id_query|default:'' }}">
+            <button type="submit">Search</button>
+        </form>
+        {% if form %}
         <form method="post" enctype="multipart/form-data" id="lecturerForm">
             {% csrf_token %}
+            <input type="hidden" name="university_id" value="{{ lecturer.university_id }}">
             <div style="display: flex; gap: 40px;">
                 <div>
                     <label>Avatar:</label>
                     {{ form.avatar }}
                     <label>Contact No:</label>
                     {{ form.contact_no }}
-                    <label>University ID:</label>
-                    {{ form.university_id }}
                     <label>Qualification:</label>
                     {{ form.qualification }}
                 </div>
@@ -54,21 +59,41 @@
                     <tr>
                         <th>Course ID</th>
                         <th>Course Name</th>
+                        <th>Edit</th>
                         <th>Delete</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for module in modules %}
+                    <tr>
+                        <td>
+                            <input type="text" name="course_id" value="{{ module.course_id }}" readonly>
+                        </td>
+                        <td>
+                            <input type="text" name="course_name" value="{{ module.course_name }}" readonly>
+                        </td>
+                        <td>
+                            <button type="button" onclick="editRow(this)">Edit</button>
+                        </td>
+                        <td>
+                            <button type="button" onclick="deleteRow(this)">Delete</button>
+                        </td>
+                    </tr>
+                    {% empty %}
                     <tr>
                         <td><input type="text" name="course_id"></td>
                         <td><input type="text" name="course_name"></td>
+                        <td><button type="button" onclick="editRow(this)">Edit</button></td>
                         <td><button type="button" onclick="deleteRow(this)">Delete</button></td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
             <button type="button" onclick="addRow()" style="margin-bottom: 20px;">+ Add New</button>
             <br>
-            <button type="submit">Submit</button>
+            <button type="submit">Update</button>
         </form>
+        {% endif %}
     </div>
 </div>
 <script>
@@ -78,13 +103,23 @@ function addRow() {
     var cell1 = newRow.insertCell(0);
     var cell2 = newRow.insertCell(1);
     var cell3 = newRow.insertCell(2);
+    var cell4 = newRow.insertCell(3);
     cell1.innerHTML = '<input type="text" name="course_id">';
     cell2.innerHTML = '<input type="text" name="course_name">';
-    cell3.innerHTML = '<button type="button" onclick="deleteRow(this)">Delete</button>';
+    cell3.innerHTML = '<button type="button" onclick="editRow(this)">Edit</button>';
+    cell4.innerHTML = '<button type="button" onclick="deleteRow(this)">Delete</button>';
 }
 function deleteRow(btn) {
     var row = btn.parentNode.parentNode;
     row.parentNode.removeChild(row);
+}
+function editRow(btn) {
+    var row = btn.parentNode.parentNode;
+    var inputs = row.getElementsByTagName('input');
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].removeAttribute('readonly');
+        inputs[i].focus();
+    }
 }
 </script>
 {% endblock %}

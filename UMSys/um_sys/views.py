@@ -225,3 +225,61 @@ def add_lecturer(request):
     else:
         form = LecturerForm(initial={'university_id': get_next_lecturer_id()})
     return render(request, 'main/add_lecturer.html', {'form': form, 'message': message})
+
+
+
+
+def manage_lecturer(request):
+    lecturer = None
+    modules = []
+    message = ''
+    university_id_query = request.GET.get('university_id', '')
+
+    if university_id_query:
+        try:
+            lecturer = Lecturer.objects.get(university_id=university_id_query)
+            modules = list(lecturer.modules.all())
+        except Lecturer.DoesNotExist:
+            lecturer = None
+            modules = []
+
+    if request.method == 'POST':
+        university_id = request.POST.get('university_id')
+        try:
+            lecturer = Lecturer.objects.get(university_id=university_id)
+        except Lecturer.DoesNotExist:
+            lecturer = None
+
+        if lecturer:
+            form = LecturerForm(request.POST, request.FILES, instance=lecturer)
+            course_ids = request.POST.getlist('course_id')
+            course_names = request.POST.getlist('course_name')
+            if form.is_valid():
+                form.save()
+                # Remove old modules
+                lecturer.modules.all().delete()
+                # Add new/edited modules
+                for cid, cname in zip(course_ids, course_names):
+                    if cid.strip() and cname.strip():
+                        LectureModule.objects.create(
+                            lecturer=lecturer,
+                            course_id=cid.strip(),
+                            course_name=cname.strip()
+                        )
+                message = "Data Updated Successfully"
+                modules = list(lecturer.modules.all())
+            else:
+                message = "Please correct the errors below."
+        else:
+            form = None
+            message = "Lecturer not found."
+    else:
+        form = LecturerForm(instance=lecturer) if lecturer else None
+
+    return render(request, 'main/manage_lecturer.html', {
+        'form': form,
+        'lecturer': lecturer,
+        'modules': modules,
+        'university_id_query': university_id_query,
+        'message': message,
+    })
