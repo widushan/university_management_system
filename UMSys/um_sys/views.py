@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm
-from .models import Student, Course
+from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm, LecturerForm
+from .models import Student, Course, Lecturer, LectureModule
 
 def home_view(request):
     return render(request, 'main/home.html')
@@ -131,3 +131,97 @@ def add_semester_courses(request):
     else:
         form = SemesterCourseForm()
     return render(request, 'main/add_semester_courses.html', {'form': form})
+
+
+
+
+def manage_semester_courses(request):
+    courses = []
+    selected_department = None
+    selected_degree = None
+    selected_semester = None
+    message = ''
+
+    if request.method == 'POST':
+        form = SemesterCourseForm(request.POST)
+        course_ids = request.POST.getlist('course_id')
+        course_names = request.POST.getlist('course_name')
+        if form.is_valid():
+            department = form.cleaned_data['department']
+            degree = form.cleaned_data['degree']
+            semester = form.cleaned_data['semester']
+
+            # Delete all existing courses for this combination
+            Course.objects.filter(department=department, degree=degree, semester=semester).delete()
+
+            # Save new/edited courses
+            for cid, cname in zip(course_ids, course_names):
+                if cid.strip() and cname.strip():
+                    Course.objects.create(
+                        department=department,
+                        degree=degree,
+                        semester=semester,
+                        course_id=cid.strip(),
+                        course_name=cname.strip()
+                    )
+            # Reload courses for display
+            courses = Course.objects.filter(department=department, degree=degree, semester=semester)
+            selected_department = department
+            selected_degree = degree
+            selected_semester = semester
+            message = "Updated successfully!"
+    else:
+        form = SemesterCourseForm(request.GET or None)
+        if form.is_valid():
+            department = form.cleaned_data['department']
+            degree = form.cleaned_data['degree']
+            semester = form.cleaned_data['semester']
+            courses = Course.objects.filter(department=department, degree=degree, semester=semester)
+            selected_department = department
+            selected_degree = degree
+            selected_semester = semester
+
+    return render(request, 'main/manage_semester_courses.html', {
+        'form': form,
+        'courses': courses,
+        'selected_department': selected_department,
+        'selected_degree': selected_degree,
+        'selected_semester': selected_semester,
+        'message': message,
+    })
+
+
+
+def get_next_lecturer_id():
+    last = Lecturer.objects.order_by('-id').first()
+    if last and last.university_id.startswith('Lec'):
+        num = int(last.university_id[3:])
+        return f"Lec{num+1:03d}"
+    return "Lec001"
+
+def add_lecturer(request):
+    message = ''
+    if request.method == 'POST':
+        form = LecturerForm(request.POST, request.FILES)
+        course_ids = request.POST.getlist('course_id')
+        course_names = request.POST.getlist('course_name')
+        if form.is_valid():
+            lecturer = form.save(commit=False)
+            lecturer.university_id = get_next_lecturer_id()
+            lecturer.save()
+            # Save modules
+            for cid, cname in zip(course_ids, course_names):
+                if cid.strip() and cname.strip():
+                    LectureModule.objects.create(
+                        lecturer=lecturer,
+                        course_id=cid.strip(),
+                        course_name=cname.strip()
+                    )
+            message = "Lecturer Added Successfully"
+            # Prepare a fresh form with incremented university_id
+            form = LecturerForm(initial={'university_id': get_next_lecturer_id()})
+        else:
+            message = "Please correct the errors below."
+    else:
+        form = LecturerForm(initial={'university_id': get_next_lecturer_id()})
+    return render(request, 'main/add_lecturer.html', {'form': form, 'message': message})

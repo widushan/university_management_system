@@ -47,3 +47,17 @@ class Course(models.Model):
     course_name = models.CharField(max_length=100)
     def __str__(self):
         return f"{self.course_id} - {self.course_name}"
+    
+
+class Lecturer(models.Model):
+    avatar = models.ImageField(upload_to='lecturer_avatars/')
+    name = models.CharField(max_length=100)
+    contact_no = models.CharField(max_length=20)
+    email = models.EmailField()
+    university_id = models.CharField(max_length=20, unique=True)
+    qualification = models.CharField(max_length=100)
+
+class LectureModule(models.Model):
+    lecturer = models.ForeignKey(Lecturer, on_delete=models.CASCADE, related_name='modules')
+    course_id = models.CharField(max_length=20)
+    course_name = models.CharField(max_length=100)

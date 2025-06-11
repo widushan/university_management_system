@@ -15,6 +15,9 @@ urlpatterns = [
     path('add_student/', views.add_student, name='add_student'),
     path('manage_student/', views.manage_student, name='manage_student'),
     path('add_semester_courses/', views.add_semester_courses, name='add_semester_courses'),
+    path('manage_semester_courses/', views.manage_semester_courses, name='manage_semester_courses'),
+    path('add_lecturer/', views.add_lecturer, name='add_lecturer'),
+    
 ]
 
 if settings.DEBUG:
