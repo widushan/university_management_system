@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm, LecturerForm
-from .models import Student, Course, Lecturer, LectureModule
+from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm, LecturerForm, DepartmentCourseForm
+from .models import Student, Course, Lecturer, LectureModule, DepartmentCourse
 
 def home_view(request):
     return render(request, 'main/home.html')
@@ -281,5 +281,98 @@ def manage_lecturer(request):
         'lecturer': lecturer,
         'modules': modules,
         'university_id_query': university_id_query,
+        'message': message,
+    })
+
+
+
+def add_departments_courses(request):
+    message = ''
+    if request.method == 'POST':
+        form = DepartmentCourseForm(request.POST)
+        course_ids = request.POST.getlist('course_id')
+        course_names = request.POST.getlist('course_name')
+        if form.is_valid():
+            department = form.cleaned_data['department']
+            degree = form.cleaned_data['degree']
+            # Optionally, delete old courses for this department/degree
+            # DepartmentCourse.objects.filter(department=department, degree=degree).delete()
+            for cid, cname in zip(course_ids, course_names):
+                if cid.strip() and cname.strip():
+                    DepartmentCourse.objects.create(
+                        department=department,
+                        degree=degree,
+                        course_id=cid.strip(),
+                        course_name=cname.strip()
+                    )
+            message = "Modules Added Successfully"
+            form = DepartmentCourseForm()  # Clear form after submit
+    else:
+        form = DepartmentCourseForm()
+    return render(request, 'main/add_departments_courses.html', {'form': form, 'message': message})
+
+
+
+
+def manage_departments_courses(request):
+    courses = []
+    selected_department = None
+    selected_degree = None
+    message = ''
+
+    if request.method == 'POST':
+        form = DepartmentCourseForm(request.POST)
+        course_ids = request.POST.getlist('course_id')
+        course_names = request.POST.getlist('course_name')
+        if form.is_valid():
+            department = form.cleaned_data['department']
+            degree = form.cleaned_data['degree']
+            # Delete all existing courses for this combination
+            DepartmentCourse.objects.filter(department=department, degree=degree).delete()
+            # Save new/edited courses
+            for cid, cname in zip(course_ids, course_names):
+                if cid.strip() and cname.strip():
+                    DepartmentCourse.objects.create(
+                        department=department,
+                        degree=degree,
+                        course_id=cid.strip(),
+                        course_name=cname.strip()
+                    )
+            courses = DepartmentCourse.objects.filter(department=department, degree=degree)
+            # Deduplicate by course_id and course_name
+            seen = set()
+            unique_courses = []
+            for course in courses:
+                key = (course.course_id, course.course_name)
+                if key not in seen:
+                    seen.add(key)
+                    unique_courses.append(course)
+            courses = unique_courses
+            selected_department = department
+            selected_degree = degree
+            message = "Data Updated Successfully"
+    else:
+        form = DepartmentCourseForm(request.GET or None)
+        if form.is_valid():
+            department = form.cleaned_data['department']
+            degree = form.cleaned_data['degree']
+            courses = DepartmentCourse.objects.filter(department=department, degree=degree)
+            # Deduplicate by course_id and course_name
+            seen = set()
+            unique_courses = []
+            for course in courses:
+                key = (course.course_id, course.course_name)
+                if key not in seen:
+                    seen.add(key)
+                    unique_courses.append(course)
+            courses = unique_courses
+            selected_department = department
+            selected_degree = degree
+
+    return render(request, 'main/manage_departments_courses.html', {
+        'form': form,
+        'courses': courses,
+        'selected_department': selected_department,
+        'selected_degree': selected_degree,
         'message': message,
     })

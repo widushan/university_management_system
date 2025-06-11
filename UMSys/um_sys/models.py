@@ -61,3 +61,12 @@ class LectureModule(models.Model):
     lecturer = models.ForeignKey(Lecturer, on_delete=models.CASCADE, related_name='modules')
     course_id = models.CharField(max_length=20)
     course_name = models.CharField(max_length=100)
+    
+
+class DepartmentCourse(models.Model):
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    degree = models.ForeignKey(Degree, on_delete=models.CASCADE)
+    course_id = models.CharField(max_length=20)
+    course_name = models.CharField(max_length=100)
+    def __str__(self):
+        return f"{self.course_id} - {self.course_name}"
