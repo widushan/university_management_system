@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm, LecturerForm, DepartmentCourseForm
-from .models import Student, Course, Lecturer, LectureModule, DepartmentCourse
+from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm, LecturerForm, DepartmentCourseForm, ExamResultForm
+from .models import Student, Course, Lecturer, LectureModule, DepartmentCourse, ExamResult
 
 def home_view(request):
     return render(request, 'main/home.html')
@@ -374,5 +374,44 @@ def manage_departments_courses(request):
         'courses': courses,
         'selected_department': selected_department,
         'selected_degree': selected_degree,
+        'message': message,
+    })
+
+
+
+def add_exam_results(request):
+    student = None
+    reg_no = request.GET.get('reg_no', '')
+    message = ''
+    if reg_no:
+        try:
+            student = Student.objects.get(registration_no=reg_no)
+        except Student.DoesNotExist:
+            student = None
+            message = 'Student not found.'
+    if request.method == 'POST':
+        reg_no = request.POST.get('reg_no')
+        try:
+            student = Student.objects.get(registration_no=reg_no)
+        except Student.DoesNotExist:
+            student = None
+        if student:
+            course_ids = request.POST.getlist('course_id')
+            course_names = request.POST.getlist('course_name')
+            results = request.POST.getlist('result')
+            for cid, cname, res in zip(course_ids, course_names, results):
+                if cid.strip() and cname.strip() and res.strip():
+                    ExamResult.objects.create(
+                        student=student,
+                        course_id=cid.strip(),
+                        course_name=cname.strip(),
+                        result=res.strip()
+                    )
+            message = 'Results saved successfully.'
+        else:
+            message = 'Student not found.'
+    return render(request, 'main/add_exam_results.html', {
+        'student': student,
+        'reg_no': reg_no,
         'message': message,
     })

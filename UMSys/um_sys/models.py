@@ -70,3 +70,12 @@ class DepartmentCourse(models.Model):
     course_name = models.CharField(max_length=100)
     def __str__(self):
         return f"{self.course_id} - {self.course_name}"
+
+class ExamResult(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course_id = models.CharField(max_length=20)
+    course_name = models.CharField(max_length=100)
+    result = models.CharField(max_length=20)
+    
+    def __str__(self):
+        return f"{self.student.registration_no} - {self.course_id} - {self.result}"
