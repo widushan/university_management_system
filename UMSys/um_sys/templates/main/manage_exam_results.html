@@ -1,0 +1,150 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/add_student.css' %}">
+<div class="dashboard-container">
+    <div class="sidebar">
+        <div style="text-align: center;">
+            <img src="/static/images/logo.png" alt="University Logo">
+            <h3><a href="{% url 'home' %}"> &lt;&lt; HOME </a></h3>
+        </div>
+        <ul>
+            <a href="{% url 'add_student' %}"><li>Add Students</li></a>
+            <a href="{% url 'manage_student' %}"><li>Manage Students</li></a>
+            <a href="{% url 'add_semester_courses' %}"><li>Add Semester Courses</li></a>
+            <a href="{% url 'manage_semester_courses' %}"><li>Manage Semester Courses</li></a>
+            <a href="{% url 'add_lecturer' %}"><li>Add Lecturers</li></a>
+            <a href="{% url 'manage_lecturer' %}"><li>Manage Lecturers</li></a>
+            <a href="{% url 'add_departments_courses' %}"><li>Add Departments and Courses</li></a>
+            <a href="{% url 'manage_departments_courses' %}"><li>Manage Departments and Courses</li></a>
+            <a href="{% url 'add_exam_results' %}"><li>Add Exam Results</li></a>
+            <a href="{% url 'manage_exam_results' %}"><li class="active">Manage Exam Results</li></a>
+        </ul>
+        <a href="{% url 'home' %}" class="logout-btn">Log Out</a>
+    </div>
+    <div class="main-content">
+        <h2>Manage Exam Results</h2>
+        {% if message %}
+            <div style="color: green; font-weight: bold; margin-bottom: 20px;">{{ message }}</div>
+        {% endif %}
+        <form method="get" id="searchForm" style="margin-bottom: 30px;">
+            {% csrf_token %}
+            <label>Search by Student Reg No</label>
+            <input type="text" name="reg_no" id="reg_no" value="{{ reg_no|default:'' }}" required>
+            <button type="submit">Search</button>
+        </form>
+        <div style="margin-bottom: 20px;">
+            <label>Student Name :</label>
+            <input type="text" id="student_name" value="{{ student.name|default:'' }}" readonly>
+        </div>
+        {% if reg_no and student %}
+        <form method="post" id="results-form">
+            {% csrf_token %}
+            <input type="hidden" name="reg_no" value="{{ reg_no }}">
+            <input type="hidden" name="deleted_ids[]" id="deleted-ids">
+            <h3>Add Results</h3>
+            <table id="results-table" style="width: 100%; margin-bottom: 20px;">
+                <thead>
+                    <tr>
+                        <th>Course ID</th>
+                        <th>Course Name</th>
+                        <th>Result</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results %}
+                    <tr data-row-id="{{ result.id }}">
+                        <td>
+                            <input type="text" name="course_id[]" value="{{ result.course_id }}" readonly>
+                            <input type="hidden" name="row_id[]" value="{{ result.id }}">
+                        </td>
+                        <td>
+                            <input type="text" name="course_name[]" value="{{ result.course_name }}" readonly>
+                        </td>
+                        <td>
+                            <input type="text" name="result[]" value="{{ result.result }}" readonly>
+                        </td>
+                        <td>
+                            <button type="button" class="edit-btn">Edit</button>
+                        </td>
+                        <td>
+                            <button type="button" class="delete-btn">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="button" id="add-row-btn" style="margin-bottom: 20px;">+ Add New</button>
+            <br>
+            <button type="submit" id="update-btn">Update</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+<script>
+let deletedIds = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Edit button
+    document.querySelectorAll('.edit-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            let row = btn.closest('tr');
+            row.querySelectorAll('input[type="text"]').forEach(function(input) {
+                input.removeAttribute('readonly');
+            });
+        });
+    });
+
+    // Delete button
+    document.querySelectorAll('.delete-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            let row = btn.closest('tr');
+            let rowId = row.getAttribute('data-row-id');
+            if (rowId && rowId !== 'new') {
+                deletedIds.push(rowId);
+                document.getElementById('deleted-ids').value = deletedIds.join(',');
+            }
+            row.remove();
+        });
+    });
+
+    // Add New button
+    document.getElementById('add-row-btn')?.addEventListener('click', function() {
+        let tbody = document.querySelector('#results-table tbody');
+        let newRow = document.createElement('tr');
+        newRow.setAttribute('data-row-id', 'new');
+        newRow.innerHTML = `
+            <td>
+                <input type="text" name="course_id[]" value="">
+                <input type="hidden" name="row_id[]" value="new">
+            </td>
+            <td>
+                <input type="text" name="course_name[]" value="">
+            </td>
+            <td>
+                <input type="text" name="result[]" value="">
+            </td>
+            <td>
+                <button type="button" class="edit-btn" disabled>Edit</button>
+            </td>
+            <td>
+                <button type="button" class="delete-btn">Delete</button>
+            </td>
+        `;
+        tbody.appendChild(newRow);
+
+        // Attach delete event
+        newRow.querySelector('.delete-btn').addEventListener('click', function() {
+            newRow.remove();
+        });
+    });
+
+    // On submit, set deleted ids
+    document.getElementById('results-form')?.addEventListener('submit', function() {
+        document.getElementById('deleted-ids').value = deletedIds.join(',');
+    });
+});
+</script>
+{% endblock %}

@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm, LecturerForm, DepartmentCourseForm, ExamResultForm
 from .models import Student, Course, Lecturer, LectureModule, DepartmentCourse, ExamResult
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 def home_view(request):
     return render(request, 'main/home.html')
@@ -390,12 +392,14 @@ def add_exam_results(request):
             student = None
             message = 'Student not found.'
     if request.method == 'POST':
-        reg_no = request.POST.get('reg_no')
+        reg_no = request.POST.get('reg_no') or request.GET.get('reg_no')
         try:
             student = Student.objects.get(registration_no=reg_no)
         except Student.DoesNotExist:
             student = None
         if student:
+            # Remove old results if you want to overwrite, or skip this if you want to append
+            # ExamResult.objects.filter(student=student).delete()
             course_ids = request.POST.getlist('course_id')
             course_names = request.POST.getlist('course_name')
             results = request.POST.getlist('result')
@@ -407,11 +411,86 @@ def add_exam_results(request):
                         course_name=cname.strip(),
                         result=res.strip()
                     )
-            message = 'Results saved successfully.'
+            message = 'Results Added Successfully'
         else:
             message = 'Student not found.'
     return render(request, 'main/add_exam_results.html', {
         'student': student,
         'reg_no': reg_no,
+        'message': message,
+    })
+
+
+
+def manage_exam_results(request):
+    student = None
+    results = []
+    reg_no = request.GET.get('reg_no', '')
+    message = ''
+
+    if reg_no:
+        try:
+            student = Student.objects.get(registration_no=reg_no)
+            results = list(ExamResult.objects.filter(student=student))
+        except Student.DoesNotExist:
+            student = None
+            message = 'Student not found.'
+
+    if request.method == 'POST':
+        reg_no = request.POST.get('reg_no')
+        try:
+            student = Student.objects.get(registration_no=reg_no)
+        except Student.DoesNotExist:
+            return render(request, 'main/manage_exam_results.html', {
+                'student': None,
+                'reg_no': reg_no,
+                'results': [],
+                'message': 'Student not found.'
+            })
+
+        # Handle deletions
+        deleted_ids = [i for i in request.POST.getlist('deleted_ids[]') if i.strip()]
+        if deleted_ids:
+            ExamResult.objects.filter(id__in=deleted_ids, student=student).delete()
+        # Handle updates/adds
+        course_ids = request.POST.getlist('course_id[]')
+        course_names = request.POST.getlist('course_name[]')
+        result_vals = request.POST.getlist('result[]')
+        row_ids = request.POST.getlist('row_id[]')
+
+        for idx in range(len(course_ids)):
+            cid = course_ids[idx].strip()
+            cname = course_names[idx].strip()
+            res = result_vals[idx].strip()
+            row_id = row_ids[idx].strip() if idx < len(row_ids) else ''
+
+            if not cid or not cname or not res:
+                continue
+
+            if row_id and row_id != 'new':
+                try:
+                    er = ExamResult.objects.get(id=row_id, student=student)
+                    er.course_id = cid
+                    er.course_name = cname
+                    er.result = res
+                    er.save()
+                except (ExamResult.DoesNotExist, ValueError):
+                    # ValueError will catch the case where row_id is not a valid integer
+                    pass
+            elif row_id == 'new' or not row_id:
+                ExamResult.objects.create(
+                    student=student,
+                    course_id=cid,
+                    course_name=cname,
+                    result=res
+                )
+
+        message = 'Results updated successfully.'
+        results = list(ExamResult.objects.filter(student=student))
+
+    return render(request, 'main/manage_exam_results.html', {
+        'student': student,
+        'reg_no': reg_no,
+        'results': results,
         'message': message,
     })
