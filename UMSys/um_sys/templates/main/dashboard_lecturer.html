@@ -2,5 +2,9 @@
 {% block content %}
     <h2>Lecturer Dashboard</h2>
     <p>Welcome, Lecturer!</p>
+
+    <a href="{% url 'lec_profile' %}">My Profile</a><br>
+    
+    
     <a href="{% url 'home' %}">Logout</a>
 {% endblock %}

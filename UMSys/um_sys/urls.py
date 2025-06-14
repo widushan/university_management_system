@@ -26,6 +26,7 @@ urlpatterns = [
     path('add_modules/', views.add_modules, name='add_modules'),
     path('view_dashboard/', views.view_dashboard, name='view_dashboard'),
     path('exam_results/', views.exam_results, name='exam_results'),
+    path('lec_profile/', views.lec_profile, name='lec_profile'),
     
 ]
 

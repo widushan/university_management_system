@@ -556,3 +556,10 @@ def exam_results(request):
         'student': student,
         'results': results,
     })
+
+
+@login_required
+def lec_profile(request):
+    lecturer = get_object_or_404(Lecturer, university_id=request.user.username)
+    courses = lecturer.modules.all()  
+    return render(request, 'main/lec_profile.html', {'lecturer': lecturer, 'courses': courses})
