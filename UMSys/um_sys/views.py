@@ -511,12 +511,10 @@ def add_modules(request):
 
     semester_id = request.GET.get('semester')
     if semester_id:
-        courses = Course.objects.filter(
-            department=student.department,
-            degree=student.degree,
-            semester_id=semester_id
-        )
-        
+        # Store the selected semester in the session
+        request.session['selected_semester'] = semester_id
+        # Optionally, redirect to the dashboard after selection
+        return redirect('view_dashboard')
 
     return render(request, 'main/add_modules.html', {
         'student': student,
@@ -524,11 +522,26 @@ def add_modules(request):
         'courses': courses,
     })
 
+
+from .models import Student, Course, Semester
+
 @login_required
 def view_dashboard(request):
     student = get_object_or_404(Student, registration_no=request.user.username)
-    return render(request, 'main/view_dashboard.html', {'student': student})
+    semester_id = request.session.get('selected_semester')
+    courses = None
+    semester = None
 
+    if semester_id:
+        semester = Semester.objects.filter(id=semester_id).first()
+        courses = Course.objects.filter(
+            department=student.department,
+            degree=student.degree,
+            semester_id=semester_id
+        ).order_by('course_id')
 
-    
-    
+    return render(request, 'main/view_dashboard.html', {
+        'student': student,
+        'courses': courses,
+        'semester': semester,
+    })

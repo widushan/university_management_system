@@ -84,7 +84,25 @@
             <tr><td>{{ student.registration_no }}</td></tr>
         </table>
 
-        
+        {% if courses %}
+        <h3 style="text-align:center; margin-top:40px;">My Modules</h3>
+        <table id="courses_table" class="profile-table">
+            <tr>
+                <th>Course ID</th>
+                <th>Course Name</th>
+                <th>Semester</th>
+            </tr>
+            {% for course in courses %}
+            <tr>
+                <td>{{ course.course_id }}</td>
+                <td>{{ course.course_name }}</td>
+                <td>{{ course.semester.name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p style="text-align:center;">No modules found for your department and degree.</p>
+    {% endif %}
 
     </div>
 </div>
