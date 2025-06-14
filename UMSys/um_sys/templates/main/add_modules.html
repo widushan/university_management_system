@@ -1,0 +1,76 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/add_student.css' %}">
+<style>
+    .profile-table {
+    width: 100%;
+    max-width: 600px;
+    margin: 30px auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    overflow: hidden;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    .profile-table th, .profile-table td {
+        padding: 16px 20px;
+        text-align: left;
+    }
+
+    .profile-table th {
+        background: #f5f7fa;
+        color: #2d3a4b;
+        font-weight: 600;
+        width: 180px;
+        border-right: 2px solid #f0f0f0;
+    }
+
+    .profile-table tr:not(:last-child) td,
+    .profile-table tr:not(:last-child) th {
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .profile-table td {
+        color: #444;
+        background: #fafbfc;
+    }
+
+    
+</style>
+
+
+
+<div class="dashboard-container">
+    <div class="sidebar">
+        <div style="text-align: center;">
+            <img src="/static/images/logo.png" alt="University Logo">
+            <h3><a href="{% url 'home' %}"> &lt;&lt; HOME </a></h3>
+        </div>
+        <ul>
+            <a href="{% url 'my_profile' %}"><li>My Profile</li></a>
+            <a href="{% url 'add_modules' %}"><li class="active">Add Modules</li></a>
+            
+        </ul>
+        <a href="{% url 'home' %}" class="logout-btn">Log Out</a>
+    </div>
+    <div class="main-content">
+        <h2>Add Modules</h2>
+        <table class="profile-table">
+            
+            <tr><th>Name</th><td>{{ student.name }}</td></tr>
+            <tr><th>Registration No</th><td>{{ student.registration_no }}</td></tr>
+            <tr><th>Department</th><td>{{ student.department }}</td></tr>
+            <tr><th>Degree</th><td>{{ student.degree }}</td></tr>
+            <tr><th>Batch</th><td>{{ student.batch }}</td></tr>
+            
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+
+

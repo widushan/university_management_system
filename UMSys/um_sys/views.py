@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm, LecturerForm, DepartmentCourseForm, ExamResultForm
@@ -505,18 +506,12 @@ def manage_exam_results(request):
 
 
 
+@login_required
 def my_profile(request):
-    user = request.user
-    if not user.is_authenticated:
-        return redirect('login_student')  # Redirect to login if not authenticated
+    student = get_object_or_404(Student, registration_no=request.user.username)
+    return render(request, 'main/my_profile.html', {'student': student})
 
-    if request.method == 'POST':
-        form = StudentEditForm(request.POST, request.FILES, instance=user.student)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Profile updated successfully!")
-            return redirect('my_profile')
-    else:
-        form = StudentEditForm(instance=user.student)
-
-    return render(request, 'main/my_profile.html', {'form': form})
+@login_required
+def add_modules(request):
+    student = get_object_or_404(Student, registration_no=request.user.username)
+    return render(request, 'main/add_modules.html', {'student': student})
