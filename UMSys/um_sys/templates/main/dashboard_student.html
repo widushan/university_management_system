@@ -2,5 +2,10 @@
 {% block content %}
     <h2>Student Dashboard</h2>
     <p>Welcome, Student!</p>
+
+    <a href="{% url 'my_profile' %}">My Profile</a><br>
+    
+    
+
     <a href="{% url 'home' %}">Logout</a>
 {% endblock %}

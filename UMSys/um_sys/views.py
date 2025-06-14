@@ -494,3 +494,29 @@ def manage_exam_results(request):
         'results': results,
         'message': message,
     })
+
+
+
+
+
+
+
+
+
+
+
+def my_profile(request):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect('login_student')  # Redirect to login if not authenticated
+
+    if request.method == 'POST':
+        form = StudentEditForm(request.POST, request.FILES, instance=user.student)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully!")
+            return redirect('my_profile')
+    else:
+        form = StudentEditForm(instance=user.student)
+
+    return render(request, 'main/my_profile.html', {'form': form})
