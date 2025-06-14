@@ -85,24 +85,15 @@
         </table>
 
         {% if courses %}
-        <h3 style="text-align:center; margin-top:40px;">My Modules</h3>
-        <table id="courses_table" class="profile-table">
-            <tr>
-                <th>Course ID</th>
-                <th>Course Name</th>
-                <th>Semester</th>
-            </tr>
-            {% for course in courses %}
-            <tr>
-                <td>{{ course.course_id }}</td>
-                <td>{{ course.course_name }}</td>
-                <td>{{ course.semester.name }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p style="text-align:center;">No modules found for your department and degree.</p>
-    {% endif %}
+            <h3 style="text-align:center; margin-top:40px;">My Modules{% if semester %} for {{ semester.name }}{% endif %}</h3>
+            <ul style="max-width:600px; margin:30px auto 0 auto; padding-left:30px; font-size:1.1rem; text-align: left;">
+                {% for course in courses %}
+                    <li style="margin-bottom: 10px;"> {{ course.course_id }} – {{ course.course_name }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p style="text-align:center;">No modules found for your department and degree.</p>
+        {% endif %}
 
     </div>
 </div>
