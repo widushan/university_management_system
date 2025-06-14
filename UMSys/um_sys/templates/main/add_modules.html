@@ -39,8 +39,43 @@
         background: #fafbfc;
     }
 
+    .messages {
+    list-style: none;
+    padding: 0;
+    margin: 20px auto;
+    max-width: 600px;
+    }
+    .messages .success {
+        background: #e6ffed;
+        color: #207245;
+        border: 1px solid #b7ebc6;
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+    #reset-courses {
+        background: #f34c4c;
+        color: #fff;
+        border: none;
+        border-radius: 24px;
+        padding: 10px 36px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin: 20px auto;
+        display: block;
+        transition: background 0.2s;
+    }
+
+    #reset-courses:hover {
+        background: #fa0303;
+    }
+
     
 </style>
+
+
 
 
 
@@ -53,11 +88,14 @@
         <ul>
             <a href="{% url 'my_profile' %}"><li>My Profile</li></a>
             <a href="{% url 'add_modules' %}"><li class="active">Add Modules</li></a>
+            <a href="{% url 'view_dashboard' %}"><li>View Dashboard</li></a>
             
         </ul>
         <a href="{% url 'home' %}" class="logout-btn">Log Out</a>
     </div>
     <div class="main-content">
+        
+
         <h2>Add Modules</h2>
         <table class="profile-table">
             
@@ -68,6 +106,47 @@
             <tr><th>Batch</th><td>{{ student.batch }}</td></tr>
             
         </table>
+
+        <form method="get" style="margin: 40px auto; max-width: 600px;">
+            <input type="hidden" name="department" value="{{ student.department.id }}">
+            <input type="hidden" name="degree" value="{{ student.degree.id }}">
+            <label for="semester">Select Semester:</label>
+            <select name="semester" id="semester" required>
+                <option value="">-- Select Semester --</option>
+                {% for sem in semesters %}
+                    <option value="{{ sem.id }}" {% if sem.id|stringformat:"s" == request.GET.semester %}selected{% endif %}>{{ sem.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Add</button>
+        </form>
+
+        {% if courses %}
+            <table id="courses-table" class="profile-table">
+                <tr>
+                    <th>Course ID</th>
+                    <th>Course Name</th>
+                </tr>
+                {% for course in courses %}
+                <tr>
+                    <td>{{ course.course_id }}</td>
+                    <td>{{ course.course_name }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        <button id="reset-courses" style="margin: 20px auto; display: block;">Reset</button>
+
+    <script>
+    document.getElementById('reset-courses').onclick = function() {
+        var table = document.getElementById('courses-table');
+        if (table) table.style.display = 'none';
+        this.style.display = 'none';
+    };
+    </script>
+
+        
+
     </div>
 </div>
 {% endblock %}

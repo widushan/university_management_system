@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm, LecturerForm, DepartmentCourseForm, ExamResultForm
-from .models import Student, Course, Lecturer, LectureModule, DepartmentCourse, ExamResult
+from .models import Student, Course, Lecturer, LectureModule, DepartmentCourse, ExamResult, Semester
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
@@ -498,14 +498,6 @@ def manage_exam_results(request):
 
 
 
-
-
-
-
-
-
-
-
 @login_required
 def my_profile(request):
     student = get_object_or_404(Student, registration_no=request.user.username)
@@ -514,4 +506,29 @@ def my_profile(request):
 @login_required
 def add_modules(request):
     student = get_object_or_404(Student, registration_no=request.user.username)
-    return render(request, 'main/add_modules.html', {'student': student})
+    semesters = Semester.objects.all()
+    courses = None
+
+    semester_id = request.GET.get('semester')
+    if semester_id:
+        courses = Course.objects.filter(
+            department=student.department,
+            degree=student.degree,
+            semester_id=semester_id
+        )
+        
+
+    return render(request, 'main/add_modules.html', {
+        'student': student,
+        'semesters': semesters,
+        'courses': courses,
+    })
+
+@login_required
+def view_dashboard(request):
+    student = get_object_or_404(Student, registration_no=request.user.username)
+    return render(request, 'main/view_dashboard.html', {'student': student})
+
+
+    
+    

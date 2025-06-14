@@ -6,7 +6,7 @@ body {
 }
 
 .dashboard-container {
-    margin-top: -60px;
+    margin-top: -80px;
     display: flex;
     min-height: 100vh;
 }
@@ -19,6 +19,9 @@ body {
     padding-left: 20px;
     padding-right: 20px;
     box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+    position: fixed; /* Optional: for always visible sidebar */
+    left: 0;
+    top: 0;
 }
 
 .sidebar img {

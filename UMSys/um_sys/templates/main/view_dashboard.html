@@ -18,7 +18,7 @@
 
     .profile-table th, .profile-table td {
         padding: 16px 20px;
-        text-align: left;
+        text-align: center;
     }
 
     .profile-table th {
@@ -56,17 +56,18 @@
             <h3><a href="{% url 'home' %}"> &lt;&lt; HOME </a></h3>
         </div>
         <ul>
-            <a href="{% url 'my_profile' %}"><li class="active">My Profile</li></a>
+            <a href="{% url 'my_profile' %}"><li>My Profile</li></a>
             <a href="{% url 'add_modules' %}"><li>Add Modules</li></a>
-            <a href="{% url 'view_dashboard' %}"><li>View Dashboard</li></a>
+            <a href="{% url 'view_dashboard' %}"><li class="active">View Dashboard</li></a>
+
             
         </ul>
         <a href="{% url 'home' %}" class="logout-btn">Log Out</a>
     </div>
     <div class="main-content">
-        <h2>My Profile</h2>
+        <h2>My Dashboard</h2>
         <table class="profile-table">
-            <tr><th>Avatar</th>
+            <tr>
                 <td>
                     {% if student.avatar %}
                         <img src="{{ student.avatar.url }}" alt="Avatar" width="100">
@@ -75,19 +76,12 @@
                     {% endif %}
                 </td>
             </tr>
-            <tr><th>Name</th><td>{{ student.name }}</td></tr>
-            <tr><th>Age</th><td>{{ student.age }}</td></tr>
-            <tr><th>Contact No</th><td>{{ student.contact_no }}</td></tr>
-            <tr><th>Personal Email</th><td>{{ student.personal_email }}</td></tr>
-            <tr><th>NIC No</th><td>{{ student.nic_no }}</td></tr>
-            <tr><th>Guardian Name</th><td>{{ student.guardian_name }}</td></tr>
-            <tr><th>Guardian Contact No</th><td>{{ student.guardian_contact_no }}</td></tr>
-            <tr><th>Department</th><td>{{ student.department }}</td></tr>
-            <tr><th>Degree</th><td>{{ student.degree }}</td></tr>
-            <tr><th>Entry Year</th><td>{{ student.entry_year }}</td></tr>
-            <tr><th>Batch</th><td>{{ student.batch }}</td></tr>
-            <tr><th>University Email</th><td>{{ student.university_email }}</td></tr>
-            <tr><th>Registration No</th><td>{{ student.registration_no }}</td></tr>
+            <tr><td>{{ student.name }}</td></tr>
+            <tr><td>{{ student.department }}</td></tr>
+            <tr><td>{{ student.degree }}</td></tr>
+            <tr><td>{{ student.entry_year }}</td></tr>
+            <tr><td>{{ student.batch }}</td></tr>
+            <tr><td>{{ student.registration_no }}</td></tr>
         </table>
 
         

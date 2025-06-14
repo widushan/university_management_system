@@ -23,7 +23,8 @@ urlpatterns = [
     path('add_exam_results/', views.add_exam_results, name='add_exam_results'),
     path('manage_exam_results/', views.manage_exam_results, name='manage_exam_results'),
     path('my_profile/', views.my_profile, name='my_profile'),
-    path('add_modules/', views.add_modules, name='add_modules')
+    path('add_modules/', views.add_modules, name='add_modules'),
+    path('view_dashboard/', views.view_dashboard, name='view_dashboard'),
 ]
 
 if settings.DEBUG:
