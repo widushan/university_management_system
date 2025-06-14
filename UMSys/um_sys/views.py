@@ -545,3 +545,14 @@ def view_dashboard(request):
         'courses': courses,
         'semester': semester,
     })
+
+
+
+@login_required
+def exam_results(request):
+    student = get_object_or_404(Student, registration_no=request.user.username)
+    results = ExamResult.objects.filter(student=student)  # No select_related
+    return render(request, 'main/exam_results.html', {
+        'student': student,
+        'results': results,
+    })

@@ -25,7 +25,10 @@ urlpatterns = [
     path('my_profile/', views.my_profile, name='my_profile'),
     path('add_modules/', views.add_modules, name='add_modules'),
     path('view_dashboard/', views.view_dashboard, name='view_dashboard'),
+    path('exam_results/', views.exam_results, name='exam_results'),
+    
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
