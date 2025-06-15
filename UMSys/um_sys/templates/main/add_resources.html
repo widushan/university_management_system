@@ -65,6 +65,54 @@
     </div>
     <div class="main-content">
         <h2>Add Resources</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <div>
+                        <label>Assignment ID</label>
+                        <input type="text" name="assignment_id" required>
+                    </div>
+                    <div>
+                        <label>Course ID</label>
+                        <select name="course_id" required>
+                            <option value="">Select Course ID</option>
+                            {% for course in courses %}
+                                <option value="{{ course.course_id }}">{{ course.course_id }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Course Name</label>
+                        <select name="course_name" required>
+                            <option value="">Select Course Name</option>
+                            {% for course in courses %}
+                                <option value="{{ course.course_name }}">{{ course.course_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Topic</label>
+                        <input type="text" name="topic" required>
+                    </div>
+                    <div>
+                        <label>Sub Topic</label>
+                        <input type="text" name="sub_topic">
+                    </div>
+                    <div>
+                        <label>Note</label>
+                        <textarea name="note" rows="4"></textarea>
+                    </div>
+                    <div>
+                        <label>Document</label>
+                        <input type="file" name="document" accept=".pdf,.doc,.docx" required>
+                    </div>
+                    <div>
+                        <label>Deadline</label>
+                        <input type="date" name="deadline" required>
+                    </div>
+                    <div>
+                        <button type="submit">Submit</button>
+                    </div>
+            </form>
         
 
 

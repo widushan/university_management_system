@@ -569,5 +569,5 @@ def lec_profile(request):
 @login_required
 def add_resources(request):
     lecturer = get_object_or_404(Lecturer, university_id=request.user.username)
-     
-    return render(request, 'main/add_resources.html', {'lecturer': lecturer})
+    courses = lecturer.modules.all()
+    return render(request, 'main/add_resources.html', {'lecturer': lecturer, 'courses': courses})
