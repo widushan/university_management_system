@@ -3,9 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm, LecturerForm, DepartmentCourseForm, ExamResultForm
-from .models import Student, Course, Lecturer, LectureModule, DepartmentCourse, ExamResult, Semester
+from .models import Student, Course, Lecturer, LectureModule, DepartmentCourse, ExamResult, Semester, LectureMaterial
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+
+
 
 def home_view(request):
     return render(request, 'main/home.html')
@@ -566,8 +568,75 @@ def lec_profile(request):
     return render(request, 'main/lec_profile.html', {'lecturer': lecturer, 'courses': courses})
 
 
+
 @login_required
 def add_resources(request):
     lecturer = get_object_or_404(Lecturer, university_id=request.user.username)
     courses = lecturer.modules.all()
-    return render(request, 'main/add_resources.html', {'lecturer': lecturer, 'courses': courses})
+    message = ''
+    if request.method == 'POST':
+        assignment_id = request.POST.get('assignment_id')
+        course_id = request.POST.get('course_id')
+        course_name = request.POST.get('course_name')
+        topic = request.POST.get('topic')
+        sub_topic = request.POST.get('sub_topic')
+        note = request.POST.get('note')
+        deadline = request.POST.get('deadline')
+        document = request.FILES.get('document')
+        LectureMaterial.objects.create(
+            lecturer=lecturer,
+            assignment_id=assignment_id,
+            course_id=course_id,
+            course_name=course_name,
+            topic=topic,
+            sub_topic=sub_topic,
+            note=note,
+            deadline=deadline,
+            document=document
+        )
+        # Show success message and redirect
+        request.session['resource_success'] = True
+        return redirect('view_resources')
+    return render(request, 'main/add_resources.html', {'lecturer': lecturer, 'courses': courses, 'message': message})
+
+
+
+@login_required
+def view_resources(request):
+    lecturer = get_object_or_404(Lecturer, university_id=request.user.username)
+    courses = lecturer.modules.all()
+    materials = LectureMaterial.objects.filter(lecturer=lecturer).order_by('-created_at')
+    success = request.session.pop('resource_success', False)
+    return render(request, 'main/view_resources.html', {
+        'lecturer': lecturer,
+        'courses': courses,
+        'materials': materials,
+        'success': success
+    })
+
+@login_required
+def delete_material(request, material_id):
+    material = get_object_or_404(LectureMaterial, id=material_id, lecturer__university_id=request.user.username)
+    if request.method == 'POST':
+        material.delete()
+        return redirect('view_resources')
+    return redirect('view_resources')
+
+@login_required
+def edit_material(request, material_id):
+    material = get_object_or_404(LectureMaterial, id=material_id, lecturer__university_id=request.user.username)
+    if request.method == 'POST':
+        material.assignment_id = request.POST.get('assignment_id')
+        material.course_id = request.POST.get('course_id')
+        material.course_name = request.POST.get('course_name')
+        material.topic = request.POST.get('topic')
+        material.sub_topic = request.POST.get('sub_topic')
+        material.note = request.POST.get('note')
+        deadline = request.POST.get('deadline')
+        if deadline:
+            material.deadline = deadline
+        if request.FILES.get('document'):
+            material.document = request.FILES.get('document')
+        material.save()
+        return redirect('view_resources')
+    return render(request, 'main/edit_material.html', {'material': material})

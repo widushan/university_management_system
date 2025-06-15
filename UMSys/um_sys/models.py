@@ -79,3 +79,17 @@ class ExamResult(models.Model):
     
     def __str__(self):
         return f"{self.student.registration_no} - {self.course_id} - {self.result}"
+    
+
+
+class LectureMaterial(models.Model):
+    lecturer = models.ForeignKey(Lecturer, on_delete=models.CASCADE)
+    assignment_id = models.CharField(max_length=50)
+    course_id = models.CharField(max_length=20)
+    course_name = models.CharField(max_length=100)
+    topic = models.CharField(max_length=200)
+    sub_topic = models.CharField(max_length=200, blank=True)
+    note = models.TextField(blank=True)
+    document = models.FileField(upload_to='lecture_materials/')
+    deadline = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)

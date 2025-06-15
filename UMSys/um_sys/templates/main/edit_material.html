@@ -1,0 +1,111 @@
+{% extends 'main/base.html' %}
+{% block content %}
+
+<style>
+    .edit-material-container {
+        max-width: 500px;
+        margin: 40px auto 0 auto;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        padding: 36px 32px 28px 32px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    .edit-material-container h2 {
+        text-align: center;
+        color: #1a3557;
+        margin-bottom: 28px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .edit-material-container form > div {
+        margin-bottom: 18px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .edit-material-container label {
+        font-weight: 600;
+        color: #1a3557;
+        margin-bottom: 6px;
+    }
+
+    .edit-material-container input[type="text"],
+    .edit-material-container input[type="date"],
+    .edit-material-container textarea,
+    .edit-material-container input[type="file"] {
+        padding: 8px 12px;
+        border: 1px solid #b6d6f2;
+        border-radius: 6px;
+        font-size: 1rem;
+        background: #f7fbfd;
+        color: #222;
+        outline: none;
+        transition: border 0.2s;
+    }
+
+    .edit-material-container input[type="text"]:focus,
+    .edit-material-container input[type="date"]:focus,
+    .edit-material-container textarea:focus {
+        border: 1.5px solid #1976d2;
+    }
+
+    .edit-material-container textarea {
+        min-height: 60px;
+        resize: vertical;
+    }
+
+    .edit-material-container button[type="submit"] {
+        background: #1976d2;
+        color: #fff;
+        border: none;
+        padding: 10px 10px;
+        border-radius: 6px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background 0.2s;
+    }
+
+    .edit-material-container button[type="submit"]:hover {
+        background: #145ea8;
+    }
+
+    .edit-material-container a {
+        color: #1976d2;
+        text-decoration: none;
+        font-size: 0.98rem;
+        margin-left: 8px;
+    }
+
+    .edit-material-container a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+
+
+<div class="edit-material-container">
+    <h2>Edit Lecture Material</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div><label>Assignment ID:</label> <input type="text" name="assignment_id" value="{{ material.assignment_id }}" required></div>
+        <div><label>Course ID:</label> <input type="text" name="course_id" value="{{ material.course_id }}" required></div>
+        <div><label>Course Name:</label> <input type="text" name="course_name" value="{{ material.course_name }}" required></div>
+        <div><label>Topic:</label> <input type="text" name="topic" value="{{ material.topic }}" required></div>
+        <div><label>Sub Topic:</label> <input type="text" name="sub_topic" value="{{ material.sub_topic }}"></div>
+        <div><label>Note:</label> <textarea name="note">{{ material.note }}</textarea></div>
+        <div>
+            <label>Document:</label>
+            <input type="file" name="document">
+            <span>Current: <a href="{{ material.document.url }}" target="_blank">Download</a></span>
+        </div>
+        <div><label>Deadline:</label> <input type="date" name="deadline" value="{{ material.deadline }}"></div>
+        <button type="submit">Update</button>
+    </form>
+</div>
+
+{% endblock %}

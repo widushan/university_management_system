@@ -28,6 +28,9 @@ urlpatterns = [
     path('exam_results/', views.exam_results, name='exam_results'),
     path('lec_profile/', views.lec_profile, name='lec_profile'),
     path('add_resources/', views.add_resources, name='add_resources'),
+    path('view_resources/', views.view_resources, name='view_resources'),
+    path('delete_material/<int:material_id>/', views.delete_material, name='delete_material'),
+    path('edit_material/<int:material_id>/', views.edit_material, name='edit_material'),
     
 ]
 

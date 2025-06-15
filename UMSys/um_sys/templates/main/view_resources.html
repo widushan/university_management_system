@@ -1,0 +1,92 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/add_student.css' %}">
+
+<style>
+    .material-list {
+        max-width: 700px;
+        margin: 30px auto 0 auto;
+        padding: 0;
+        list-style: none;
+    }
+    .material-item {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        margin-bottom: 22px;
+        padding: 22px 28px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+    .material-item span {
+        color: #1a3557;
+        font-weight: 600;
+        margin-right: 8px;
+    }
+    .material-item a {
+        color: #1976d2;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .material-item a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+
+
+<div class="dashboard-container">
+    <div class="sidebar">
+        <div style="text-align: center;">
+            <img src="/static/images/logo.png" alt="University Logo">
+            <h3><a href="{% url 'home' %}"> &lt;&lt; HOME </a></h3>
+        </div>
+        <ul>
+            <a href="{% url 'lec_profile' %}"><li>My Profile</li></a>
+            <a href="{% url 'add_resources' %}"><li>Add Resources</li></a>
+            <a href="{% url 'view_resources' %}"><li class="active">View Resources</li></a>
+            <a href="{% url 'add ennouncements' %}">Add Announcements</a><br>
+            <a href="{% url 'edit ennouncements' %}">Edit Announcements</a><br>
+            
+        </ul>
+        <a href="{% url 'home' %}" class="logout-btn">Log Out</a>
+    </div>
+    <div class="main-content">
+        {% if success %}
+            <div style="color: green; font-weight: bold; margin-bottom: 20px;">Lecture Material Added Successfully</div>
+        {% endif %}
+
+        <h2>Lecture Materials</h2>
+        <ul class="material-list">
+            {% for material in materials %}
+                <li class="material-item">
+                    <div><span>Assignment ID:</span> {{ material.assignment_id }}</div>
+                    <div><span>Course ID:</span> {{ material.course_id }}</div>
+                    <div><span>Course Name:</span> {{ material.course_name }}</div>
+                    <div><span>Topic:</span> {{ material.topic }}</div>
+                    <div><span>Sub Topic:</span> {{ material.sub_topic }}</div>
+                    <div><span>Note:</span> {{ material.note }}</div>
+                    <div><span>Document:</span> <a href="{{ material.document.url }}" target="_blank">Download</a></div>
+                    <div><span>Deadline:</span> {{ material.deadline }}</div>
+                    <div style="margin-top:10px;">
+                        <form method="post" action="{% url 'delete_material' material.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Are you sure you want to delete this material?');" style="background:#e74c3c;color:#fff;border:none;padding:6px 16px;border-radius:6px;cursor:pointer;">Delete</button>
+                        </form>
+                        <a href="{% url 'edit_material' material.id %}" style="background:#1976d2;color:#fff;padding:6px 16px;border-radius:6px;text-decoration:none;margin-left:8px;">Edit</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+            
+
+    </div>
+</div>
+{% endblock %}
+
+
+
