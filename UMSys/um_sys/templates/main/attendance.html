@@ -1,4 +1,4 @@
- {% extends 'main/base.html' %}
+{% extends 'main/base.html' %}
 {% load static %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/add_student.css' %}">
@@ -13,9 +13,9 @@
             <a href="{% url 'lec_profile' %}"><li>My Profile</li></a>
             <a href="{% url 'add_resources' %}"><li>Add Resources</li></a>
             <a href="{% url 'view_resources' %}"><li>View Resources</li></a>
-            <a href="{% url 'add_announcements' %}"><li class="active">Add Announcements</li></a>
+            <a href="{% url 'add_announcements' %}"><li>Add Announcements</li></a>
             <a href="{% url 'view_announcements' %}"><li>View Announcements</li></a>
-            <a href="{% url 'attendance' %}"><li>Generate Attendance</li></a>
+            <a href="{% url 'attendance' %}"><li class="active">Generate Attendance</li></a>
             <br>
             
             
@@ -24,7 +24,7 @@
     </div>
 
     <div class="main-content">
-        <h2>Add Announcements</h2>
+        <h2>Generate Attendance</h2>
         <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                     <div>
@@ -46,14 +46,11 @@
                         </select>
                     </div>
                     <div>
-                        <label>Title</label>
-                        <input type="text" name="title" required>
+                        <label>Time</label>
+                        
                     </div>
                     
-                    <div>
-                        <label>Note</label>
-                        <textarea name="note" rows="4"></textarea>
-                    </div>
+                    
                     
                     
                         <button type="submit">Submit</button>

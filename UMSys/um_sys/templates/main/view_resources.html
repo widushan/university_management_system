@@ -35,6 +35,11 @@
     .material-item a:hover {
         text-decoration: underline;
     }
+    .material-item div form {
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
 </style>
 
 
@@ -50,7 +55,9 @@
             <a href="{% url 'add_resources' %}"><li>Add Resources</li></a>
             <a href="{% url 'view_resources' %}"><li class="active">View Resources</li></a>
             <a href="{% url 'add_announcements' %}"><li>Add Announcements</li></a>
-            <a href="{% url 'view_announcements' %}"><li>View Announcements</li></a><br>
+            <a href="{% url 'view_announcements' %}"><li>View Announcements</li></a>
+            <a href="{% url 'attendance' %}"><li>Generate Attendance</li></a>
+            <br>
             
             
         </ul>

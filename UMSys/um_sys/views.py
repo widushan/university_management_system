@@ -625,6 +625,7 @@ def delete_material(request, material_id):
 @login_required
 def edit_material(request, material_id):
     material = get_object_or_404(LectureMaterial, id=material_id, lecturer__university_id=request.user.username)
+    courses = material.lecturer.modules.all()
     if request.method == 'POST':
         material.assignment_id = request.POST.get('assignment_id')
         material.course_id = request.POST.get('course_id')
@@ -639,7 +640,7 @@ def edit_material(request, material_id):
             material.document = request.FILES.get('document')
         material.save()
         return redirect('view_resources')
-    return render(request, 'main/edit_material.html', {'material': material})
+    return render(request, 'main/edit_material.html', {'material': material, 'courses': courses})
 
 
 from .models import Announcement
@@ -687,7 +688,7 @@ def edit_announcement(request, announcement_id):
         announcement.note = request.POST.get('note')
         announcement.save()
         return redirect('view_announcements')
-    return render(request, 'main/edit_announcement.html', {'announcement': announcement, 'courses': courses})
+    return render(request, 'main/edit_announcements.html', {'announcement': announcement, 'courses': courses})
 
 @login_required
 def delete_announcement(request, announcement_id):
@@ -696,3 +697,8 @@ def delete_announcement(request, announcement_id):
         announcement.delete()
         return redirect('view_announcements')
     return redirect('view_announcements')
+
+
+@login_required
+def attendance(request):
+    return render(request, 'main/attendance.html')
