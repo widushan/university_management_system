@@ -640,3 +640,59 @@ def edit_material(request, material_id):
         material.save()
         return redirect('view_resources')
     return render(request, 'main/edit_material.html', {'material': material})
+
+
+from .models import Announcement
+
+@login_required
+def add_announcements(request):
+    lecturer = get_object_or_404(Lecturer, university_id=request.user.username)
+    courses = lecturer.modules.all()
+    if request.method == 'POST':
+        course_id = request.POST.get('course_id')
+        course_name = request.POST.get('course_name')
+        title = request.POST.get('title')
+        note = request.POST.get('note')
+        Announcement.objects.create(
+            lecturer=lecturer,
+            course_id=course_id,
+            course_name=course_name,
+            title=title,
+            note=note
+        )
+        request.session['announcement_success'] = True
+        return redirect('view_announcements')
+    return render(request, 'main/add_announcements.html', {'lecturer': lecturer, 'courses': courses})
+
+@login_required
+def view_announcements(request):
+    lecturer = get_object_or_404(Lecturer, university_id=request.user.username)
+    announcements = Announcement.objects.filter(lecturer=lecturer).order_by('-created_at')
+    success = request.session.pop('announcement_success', False)
+    return render(request, 'main/view_announcements.html', {
+        'lecturer': lecturer,
+        'announcements': announcements,
+        'success': success
+    })
+
+@login_required
+def edit_announcement(request, announcement_id):
+    announcement = get_object_or_404(Announcement, id=announcement_id, lecturer__university_id=request.user.username)
+    lecturer = announcement.lecturer
+    courses = lecturer.modules.all()
+    if request.method == 'POST':
+        announcement.course_id = request.POST.get('course_id')
+        announcement.course_name = request.POST.get('course_name')
+        announcement.title = request.POST.get('title')
+        announcement.note = request.POST.get('note')
+        announcement.save()
+        return redirect('view_announcements')
+    return render(request, 'main/edit_announcement.html', {'announcement': announcement, 'courses': courses})
+
+@login_required
+def delete_announcement(request, announcement_id):
+    announcement = get_object_or_404(Announcement, id=announcement_id, lecturer__university_id=request.user.username)
+    if request.method == 'POST':
+        announcement.delete()
+        return redirect('view_announcements')
+    return redirect('view_announcements')

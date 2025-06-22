@@ -93,3 +93,13 @@ class LectureMaterial(models.Model):
     document = models.FileField(upload_to='lecture_materials/')
     deadline = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+class Announcement(models.Model):
+    lecturer = models.ForeignKey(Lecturer, on_delete=models.CASCADE)
+    course_id = models.CharField(max_length=20)
+    course_name = models.CharField(max_length=100)
+    title = models.CharField(max_length=200)
+    note = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)

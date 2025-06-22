@@ -1,1 +1,65 @@
- 
+ {% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/add_student.css' %}">
+
+<div class="dashboard-container">
+    <div class="sidebar">
+        <div style="text-align: center;">
+            <img src="/static/images/logo.png" alt="University Logo">
+            <h3><a href="{% url 'home' %}"> &lt;&lt; HOME </a></h3>
+        </div>
+        <ul>
+            <a href="{% url 'lec_profile' %}"><li>My Profile</li></a>
+            <a href="{% url 'add_resources' %}"><li>Add Resources</li></a>
+            <a href="{% url 'view_resources' %}"><li>View Resources</li></a>
+            <a href="{% url 'add_announcements' %}"><li class="active">Add Announcements</li></a>
+            <a href="{% url 'view_announcements' %}"><li>View Announcements</li></a><br>
+            
+            
+        </ul>
+        <a href="{% url 'home' %}" class="logout-btn">Log Out</a>
+    </div>
+
+    <div class="main-content">
+        <h2>Add Announcements</h2>
+        <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <div>
+                        <label>Course ID</label>
+                        <select name="course_id" required>
+                            <option value="">Select Course ID</option>
+                            {% for course in courses %}
+                                <option value="{{ course.course_id }}">{{ course.course_id }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Course Name</label>
+                        <select name="course_name" required>
+                            <option value="">Select Course Name</option>
+                            {% for course in courses %}
+                                <option value="{{ course.course_name }}">{{ course.course_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Title</label>
+                        <input type="text" name="title" required>
+                    </div>
+                    
+                    <div>
+                        <label>Note</label>
+                        <textarea name="note" rows="4"></textarea>
+                    </div>
+                    
+                    
+                        <button type="submit">Submit</button>
+                    </div>
+            </form>
+            
+
+    </div>
+</div>
+
+{% endblock %}

@@ -31,6 +31,10 @@ urlpatterns = [
     path('view_resources/', views.view_resources, name='view_resources'),
     path('delete_material/<int:material_id>/', views.delete_material, name='delete_material'),
     path('edit_material/<int:material_id>/', views.edit_material, name='edit_material'),
+    path('add_announcements/', views.add_announcements, name='add_announcements'),
+    path('view_announcements/', views.view_announcements, name='view_announcements'),
+    path('edit_announcement/<int:announcement_id>/', views.edit_announcement, name='edit_announcement'),
+    path('delete_announcement/<int:announcement_id>/', views.delete_announcement, name='delete_announcement'),
     
 ]
 
