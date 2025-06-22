@@ -1,0 +1,129 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/add_student.css' %}">
+<style>
+    .attendance-action-btn {
+        display: inline-block;
+        padding: 6px 18px;
+        border-radius: 20px;
+        font-size: 1em;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        margin-right: 8px;
+        transition: background 0.2s, color 0.2s;
+        text-decoration: none;
+    }
+    .attendance-edit-btn {
+        background: #1976d2;
+        color: #fff;
+    }
+    .attendance-edit-btn:hover {
+        background: #145ea8;
+    }
+    .attendance-delete-btn {
+        background: #e74c3c;
+        color: #fff;
+    }
+    .attendance-delete-btn:hover {
+        background: #c0392b;
+    }
+    .attendance-action-btn.attendance-delete-btn {
+    background: #e74c3c !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 6px 18px !important;
+    border-radius: 20px !important;
+    font-size: 1em !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+    margin-right: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    display: inline-block !important;
+    }
+    .attendance-action-btn.attendance-delete-btn:hover {
+        background: #c0392b !important;
+    }
+    td form button.attendance-delete-btn {
+    background: #e74c3c !important;
+    color: #fff !important;
+    border: none !important;
+    padding: 6px 18px !important;
+    border-radius: 20px !important;
+    font-size: 1em !important;
+    font-weight: 500 !important;
+    box-shadow: none !important;
+    margin-right: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    display: inline-block !important;
+    }
+    td form button.attendance-delete-btn:hover {
+        background: #c0392b !important;
+    }
+    td form {
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+</style>
+
+
+<div class="dashboard-container">
+    <div class="sidebar">
+        <div style="text-align: center;">
+            <img src="/static/images/logo.png" alt="University Logo">
+            <h3><a href="{% url 'home' %}"> &lt;&lt; HOME </a></h3>
+        </div>
+        <ul>
+            <a href="{% url 'lec_profile' %}"><li>My Profile</li></a>
+            <a href="{% url 'add_resources' %}"><li>Add Resources</li></a>
+            <a href="{% url 'view_resources' %}"><li>View Resources</li></a>
+            <a href="{% url 'add_announcements' %}"><li>Add Announcements</li></a>
+            <a href="{% url 'view_announcements' %}"><li>View Announcements</li></a>
+            <a href="{% url 'attendance' %}"><li>Generate Attendance</li></a>
+            <a href="{% url 'attendance_history' %}"><li class="active">Attendance History</li></a>
+            <br>
+            
+            
+        </ul>
+        <a href="{% url 'home' %}" class="logout-btn">Log Out</a>
+    </div>
+
+    <div class="main-content">
+        {% if success %}
+            <div style="color: green; font-weight: bold; margin-bottom: 20px;">Attendance Generated Successfully</div>
+        {% endif %}
+        <h2 style="margin-bottom: 60px;">Attendance History</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <tr>
+                <th>Date</th>
+                <th>Course ID</th>
+                <th>Course Name</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Actions</th>
+            </tr>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.date }}</td>
+                <td>{{ record.course_id }}</td>
+                <td>{{ record.course_name }}</td>
+                <td>{{ record.time_from }}</td>
+                <td>{{ record.time_to }}</td>
+                <td>
+                    <a href="{% url 'edit_attendance' record.id %}" class="attendance-action-btn attendance-edit-btn">Edit</a>
+                    <form method="post" action="{% url 'delete_attendance' record.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="attendance-action-btn attendance-delete-btn">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+{% endblock %}

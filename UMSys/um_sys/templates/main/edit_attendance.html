@@ -1,0 +1,33 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<div style="max-width: 500px; margin: 40px auto; background: #fff; border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); padding: 36px 32px 28px 32px;">
+    <h2 style="text-align:center; color:#1a3557; margin-bottom:28px; font-weight:700;">Edit Attendance</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div style="margin-bottom:18px;">
+            <label>Course ID</label>
+            <select name="course_id" required style="width:100%;padding:8px 12px;border:1px solid #b6d6f2;border-radius:6px;">
+                {% for course in courses %}
+                    <option value="{{ course.course_id }}" {% if course.course_id == record.course_id %}selected{% endif %}>{{ course.course_id }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="margin-bottom:18px;">
+            <label>Course Name</label>
+            <select name="course_name" required style="width:100%;padding:8px 12px;border:1px solid #b6d6f2;border-radius:6px;">
+                {% for course in courses %}
+                    <option value="{{ course.course_name }}" {% if course.course_name == record.course_name %}selected{% endif %}>{{ course.course_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+            <label style="margin-bottom:0;">Time:</label>
+            <span>From</span>
+            <input type="time" name="time_from" value="{{ record.time_from|slice:':5' }}" required style="padding:8px 12px;border:1px solid #b6d6f2;border-radius:6px;">
+            <span>To</span>
+            <input type="time" name="time_to" value="{{ record.time_to|slice:':5' }}" required style="padding:8px 12px;border:1px solid #b6d6f2;border-radius:6px;">
+        </div>
+        <button type="submit" style="background:#1976d2;color:#fff;border:none;padding:10px 10px;border-radius:6px;font-size:1.1rem;font-weight:600;cursor:pointer;margin-top:10px;width:100%;">Update</button>
+    </form>
+</div>
+{% endblock %}

@@ -103,3 +103,13 @@ class Announcement(models.Model):
     title = models.CharField(max_length=200)
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+class Attendance(models.Model):
+    lecturer = models.ForeignKey(Lecturer, on_delete=models.CASCADE)
+    course_id = models.CharField(max_length=20)
+    course_name = models.CharField(max_length=100)
+    time_from = models.TimeField()
+    time_to = models.TimeField()
+    date = models.DateField(auto_now_add=True)

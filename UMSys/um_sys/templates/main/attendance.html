@@ -16,6 +16,7 @@
             <a href="{% url 'add_announcements' %}"><li>Add Announcements</li></a>
             <a href="{% url 'view_announcements' %}"><li>View Announcements</li></a>
             <a href="{% url 'attendance' %}"><li class="active">Generate Attendance</li></a>
+            <a href="{% url 'attendance_history' %}"><li>Attendance History</li></a>
             <br>
             
             
@@ -47,13 +48,18 @@
                     </div>
                     <div>
                         <label>Time</label>
-                        
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px;">
+                            <span>From</span>
+                            <input type="time" name="time_from" required>
+                            <span>To</span>
+                            <input type="time" name="time_to" required>
+                        </div>
                     </div>
                     
                     
                     
                     
-                        <button type="submit">Submit</button>
+                        <button type="submit">Generate</button>
                     </div>
             </form>
             

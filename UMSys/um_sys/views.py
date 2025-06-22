@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm, StudentForm, StudentEditForm, SemesterCourseForm, LecturerForm, DepartmentCourseForm, ExamResultForm
-from .models import Student, Course, Lecturer, LectureModule, DepartmentCourse, ExamResult, Semester, LectureMaterial
+from .models import Attendance, Student, Course, Lecturer, LectureModule, DepartmentCourse, ExamResult, Semester, LectureMaterial
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 
@@ -701,4 +701,49 @@ def delete_announcement(request, announcement_id):
 
 @login_required
 def attendance(request):
-    return render(request, 'main/attendance.html')
+    lecturer = get_object_or_404(Lecturer, university_id=request.user.username)
+    courses = lecturer.modules.all()
+    if request.method == 'POST':
+        course_id = request.POST.get('course_id')
+        course_name = request.POST.get('course_name')
+        time_from = request.POST.get('time_from')
+        time_to = request.POST.get('time_to')
+        Attendance.objects.create(
+            lecturer=lecturer,
+            course_id=course_id,
+            course_name=course_name,
+            time_from=time_from,
+            time_to=time_to
+        )
+        request.session['attendance_success'] = True
+
+        return redirect('attendance_history')
+    return render(request, 'main/attendance.html', {'courses': courses})
+
+
+@login_required
+def attendance_history(request):
+    lecturer = get_object_or_404(Lecturer, university_id=request.user.username)
+    records = Attendance.objects.filter(lecturer=lecturer).order_by('-date')
+    success = request.session.pop('attendance_success', False)
+    return render(request, 'main/attendance_history.html', {'records': records, 'success': success})
+
+@login_required
+def edit_attendance(request, attendance_id):
+    record = get_object_or_404(Attendance, id=attendance_id, lecturer__university_id=request.user.username)
+    if request.method == 'POST':
+        record.course_id = request.POST.get('course_id')
+        record.course_name = request.POST.get('course_name')
+        record.time_from = request.POST.get('time_from')
+        record.time_to = request.POST.get('time_to')
+        record.save()
+        return redirect('attendance_history')
+    courses = record.lecturer.modules.all()
+    return render(request, 'main/edit_attendance.html', {'record': record, 'courses': courses})
+
+@login_required
+def delete_attendance(request, attendance_id):
+    record = get_object_or_404(Attendance, id=attendance_id, lecturer__university_id=request.user.username)
+    if request.method == 'POST':
+        record.delete()
+    return redirect('attendance_history')
