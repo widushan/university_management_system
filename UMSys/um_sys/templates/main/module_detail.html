@@ -54,9 +54,13 @@
     }
 </style>
 
-{% if message %}
+
+{% if 'successfully' in message %}
     <div class="success-message" style="color: green; font-weight: bold; margin-bottom: 20px;">{{ message }}</div>
+{% else %}
+    <div class="success-message" style="color: red; font-weight: bold; margin-bottom: 20px;">{{ message }}</div>
 {% endif %}
+
 
 <h2 class="module-header">{{ course.course_id }} – {{ course.course_name }}</h2>
 <div class="module-section">
@@ -98,11 +102,15 @@
                 <div><span class="module-label">Date:</span> {{ attendance.date }}</div>
                 <div><span class="module-label">Time:</span> {{ attendance.time_from }} - {{ attendance.time_to }}</div>
                 {% if user.is_authenticated %}
-                    <form method="post" style="margin-top:10px;">
-                        {% csrf_token %}
-                        <input type="hidden" name="attendance_id" value="{{ attendance.id }}">
-                        <button type="submit" style="background:#1976d2;color:#fff;padding:10px 16px;border-radius:6px;border:none; cursor: pointer;">Submit Attendance</button>
-                    </form>
+                    {% if attendance.id in submitted_attendance_ids %}
+                        <div style="color: red; font-weight: bold; margin-top:10px;">You have already submitted your attendance.</div>
+                    {% else %}
+                        <form method="post" style="margin-top:10px;">
+                            {% csrf_token %}
+                            <input type="hidden" name="attendance_id" value="{{ attendance.id }}">
+                            <button type="submit" style="background:#1976d2;color:#fff;padding:10px 16px;border-radius:6px;border:none; cursor: pointer;">Submit Attendance</button>
+                        </form>
+                    {% endif %}
                 {% endif %}
             </li>
         {% empty %}

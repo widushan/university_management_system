@@ -767,6 +767,13 @@ def module_detail(request, course_id):
         else:
             request.session['attendance_message'] = 'You have already submitted attendance for this session.'
         return redirect('module_detail', course_id=course_id)
+    if hasattr(request.user, 'student'):
+        submitted_attendance_ids = set(
+            StudentAttendance.objects.filter(student=request.user.student, attendance__in=attendances)
+            .values_list('attendance_id', flat=True)
+        )
+    else:
+        submitted_attendance_ids = set()
     message = request.session.pop('attendance_message', '')
     return render(request, 'main/module_detail.html', {
         'course': course,
@@ -774,6 +781,7 @@ def module_detail(request, course_id):
         'announcements': announcements,
         'attendances': attendances,
         'message': message,
+        'submitted_attendance_ids': submitted_attendance_ids,
     })
 
 
