@@ -127,7 +127,7 @@
                         <button type="submit" class="attendance-action-btn attendance-delete-btn">Delete</button>
                     </form>
                     <!-----------view button------->
-                    <a href="{% url 'view_attendance' %}" class="attendance-action-btn attendance-view-btn">View</a>
+                    <a href="{% url 'view_attendance' %}?attendance_id={{ record.id }}" class="attendance-action-btn attendance-view-btn">View</a>
                 </td>
             </tr>
             {% endfor %}

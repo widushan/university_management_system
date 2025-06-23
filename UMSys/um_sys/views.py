@@ -779,9 +779,12 @@ def module_detail(request, course_id):
 
 @login_required
 def view_attendance(request):
-    if hasattr(request.user, 'student'):
-        records = StudentAttendance.objects.filter(student=request.user.student).select_related('attendance').order_by('-attendance__date')
-        return render(request, 'main/view_attendance.html', {'records': records})
-    else:
-        # Optionally, show a message or redirect
-        return redirect('home')  # or render a 403 page
+    attendance_id = request.GET.get('attendance_id')
+    lecturer = Lecturer.objects.filter(university_id=request.user.username).first()
+    if attendance_id and lecturer:
+        attendance = get_object_or_404(Attendance, id=attendance_id, lecturer=lecturer)
+        student_attendances = StudentAttendance.objects.filter(attendance=attendance).select_related('student')
+        return render(request, 'main/view_attendance.html', {
+            'attendance': attendance,
+            'student_attendances': student_attendances
+        })
