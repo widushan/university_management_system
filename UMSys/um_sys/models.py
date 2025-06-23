@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
@@ -120,5 +121,5 @@ class Attendance(models.Model):
 class StudentAttendance(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE)
-    submitted_at = models.DateTimeField(auto_now_add=True)
+    submitted_at = models.DateTimeField(auto_now_add=True) 
     
