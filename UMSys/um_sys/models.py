@@ -108,8 +108,17 @@ class Announcement(models.Model):
 
 class Attendance(models.Model):
     lecturer = models.ForeignKey(Lecturer, on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
     course_id = models.CharField(max_length=20)
     course_name = models.CharField(max_length=100)
     time_from = models.TimeField()
     time_to = models.TimeField()
     date = models.DateField(auto_now_add=True)
+
+
+
+class StudentAttendance(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+    

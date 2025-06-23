@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<h2>Attendance Records</h2>
+<ul>
+    {% for record in records %}
+        <li>
+            {{ record.attendance.course_id }} - {{ record.attendance.course_name }} | 
+            {{ record.attendance.date }} | 
+            {{ record.attendance.time_from }} - {{ record.attendance.time_to }}
+        </li>
+    {% empty %}
+        <li>No attendance records found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

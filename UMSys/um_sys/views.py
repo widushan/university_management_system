@@ -747,3 +747,37 @@ def delete_attendance(request, attendance_id):
     if request.method == 'POST':
         record.delete()
     return redirect('attendance_history')
+
+
+from .models import StudentAttendance
+
+@login_required
+def module_detail(request, course_id):
+    course = get_object_or_404(Course, course_id=course_id)
+    resources = LectureMaterial.objects.filter(course_id=course_id)
+    announcements = Announcement.objects.filter(course_id=course_id)
+    attendances = Attendance.objects.filter(course_id=course_id).order_by('-date')
+    message = ''
+    if request.method == 'POST' and hasattr(request.user, 'student'):
+        attendance_id = request.POST.get('attendance_id')
+        attendance = get_object_or_404(Attendance, id=attendance_id)
+        if not StudentAttendance.objects.filter(student=request.user.student, attendance=attendance).exists():
+            StudentAttendance.objects.create(student=request.user.student, attendance=attendance)
+            request.session['attendance_message'] = 'Attendance submitted successfully!'
+        else:
+            request.session['attendance_message'] = 'You have already submitted attendance for this session.'
+        return redirect('module_detail', course_id=course_id)
+    message = request.session.pop('attendance_message', '')
+    return render(request, 'main/module_detail.html', {
+        'course': course,
+        'resources': resources,
+        'announcements': announcements,
+        'attendances': attendances,
+        'message': message,
+    })
+
+
+@login_required
+def view_attendance(request):
+    records = StudentAttendance.objects.filter(student=request.user.student).select_related('attendance').order_by('-attendance__date')
+    return render(request, 'main/view_attendance.html', {'records': records})

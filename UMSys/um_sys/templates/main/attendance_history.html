@@ -29,6 +29,13 @@
     .attendance-delete-btn:hover {
         background: #c0392b;
     }
+    .attendance-view-btn{
+        background: #51f77b;
+        color: #fff;
+    }
+    .attendance-view-btn:hover{
+        background: #3cf76a;
+    }
     .attendance-action-btn.attendance-delete-btn {
     background: #e74c3c !important;
     color: #fff !important;
@@ -92,7 +99,7 @@
         <a href="{% url 'home' %}" class="logout-btn">Log Out</a>
     </div>
 
-    <div class="main-content">
+    <div class="main-content" style="margin-left:300px;">
         {% if success %}
             <div style="color: green; font-weight: bold; margin-bottom: 20px;">Attendance Generated Successfully</div>
         {% endif %}
@@ -108,7 +115,7 @@
             </tr>
             {% for record in records %}
             <tr>
-                <td>{{ record.date }}</td>
+                <td>{{ record.date|date:"Y-m-d" }}</td>
                 <td>{{ record.course_id }}</td>
                 <td>{{ record.course_name }}</td>
                 <td>{{ record.time_from }}</td>
@@ -119,6 +126,8 @@
                         {% csrf_token %}
                         <button type="submit" class="attendance-action-btn attendance-delete-btn">Delete</button>
                     </form>
+                    <!-----------view button------->
+                    <a href="{% url 'view_attendance' %}" class="attendance-action-btn attendance-view-btn">View</a>
                 </td>
             </tr>
             {% endfor %}

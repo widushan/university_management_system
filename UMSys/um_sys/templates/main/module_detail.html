@@ -1,0 +1,111 @@
+{% extends 'main/base.html' %}
+{% block content %}
+<style>
+    .module-header {
+        text-align: center;
+        color: #1a3557;
+        font-size: 2em;
+        font-weight: 700;
+        margin-bottom: 30px;
+        letter-spacing: 1px;
+    }
+    .module-section {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        max-width: 700px;
+        margin: 30px auto 0 auto;
+        padding: 28px 36px 18px 36px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .module-section h3 {
+        color: #1976d2;
+        margin-bottom: 18px;
+        font-size: 1.3em;
+        font-weight: 600;
+    }
+    .module-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .module-list li {
+        background: #f7fbfd;
+        border-radius: 8px;
+        margin-bottom: 18px;
+        padding: 16px 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .module-list li a {
+        color: #1976d2;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .module-list li a:hover {
+        text-decoration: underline;
+    }
+    .module-label {
+        color: #1a3557;
+        font-weight: 600;
+        margin-right: 6px;
+    }
+</style>
+
+<h2 class="module-header">{{ course.course_id }} – {{ course.course_name }}</h2>
+<div class="module-section">
+    <h3>Resources</h3>
+    <ul class="module-list">
+        {% for resource in resources %}
+            <li>
+                <div><span class="module-label">Assignment ID:</span> {{ resource.assignment_id }}</div>
+                <div><span class="module-label">Topic:</span> {{ resource.topic }}</div>
+                <div><span class="module-label">Sub Topic:</span> {{ resource.sub_topic }}</div>
+                <div><span class="module-label">Note:</span> {{ resource.note }}</div>
+                <div><span class="module-label">Document:</span> <a href="{{ resource.document.url }}">Download</a></div>
+            </li>
+        {% empty %}
+            <li>No resources.</li>
+        {% endfor %}
+    </ul>
+</div>
+<div class="module-section">
+    <h3>Announcements</h3>
+    <ul class="module-list">
+        {% for announcement in announcements %}
+            <li>
+                <div><span class="module-label">Title:</span> {{ announcement.title }}</div>
+                <div><span class="module-label">Note:</span> {{ announcement.note }}</div>
+            </li>
+        {% empty %}
+            <li>No announcements.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="module-section">
+    {% if message %}
+        <div style="color: green; font-weight: bold; margin-bottom: 20px;">{{ message }}</div>
+    {% endif %}
+    <h3>Attendance Sessions</h3>
+    <ul class="module-list">
+        {% for attendance in attendances %}
+            <li>
+                <div><span class="module-label">Date:</span> {{ attendance.date }}</div>
+                <div><span class="module-label">Time:</span> {{ attendance.time_from }} - {{ attendance.time_to }}</div>
+                {% if user.is_authenticated %}
+                    <form method="post" style="margin-top:10px;">
+                        {% csrf_token %}
+                        <input type="hidden" name="attendance_id" value="{{ attendance.id }}">
+                        <button type="submit" style="background:#1976d2;color:#fff;padding:10px 16px;border-radius:6px;border:none; cursor: pointer;">Submit Attendance</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No attendance sessions.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

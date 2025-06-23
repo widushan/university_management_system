@@ -39,6 +39,8 @@ urlpatterns = [
     path('attendance_history/', views.attendance_history, name='attendance_history'),
     path('edit_attendance/<int:attendance_id>/', views.edit_attendance, name='edit_attendance'),
     path('delete_attendance/<int:attendance_id>/', views.delete_attendance, name='delete_attendance'),
+    path('module/<str:course_id>/', views.module_detail, name='module_detail'),
+    path('view_attendance/', views.view_attendance, name='view_attendance'),
 ]
 
 

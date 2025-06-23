@@ -88,7 +88,11 @@
             <h3 style="text-align:center; margin-top:40px;">My Modules{% if semester %} for {{ semester.name }}{% endif %}</h3>
             <ul style="max-width:600px; margin:30px auto 0 auto; padding-left:30px; font-size:1.1rem; text-align: left;">
                 {% for course in courses %}
-                    <li style="margin-bottom: 10px;"> {{ course.course_id }} – {{ course.course_name }}</li>
+                    <li style="margin-bottom: 10px;">
+                        <a href="{% url 'module_detail' course.course_id %}">
+                            {{ course.course_id }} – {{ course.course_name }}
+                        </a>
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}
